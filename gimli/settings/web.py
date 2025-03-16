@@ -74,6 +74,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "gimli.middleware.ErrorLoggingMiddleware",
     "gimli.middleware.RequestTimingMiddleware",
+    "gimli.middleware.QueryTracingMiddleware",
 ]
 
 # Add whitenoise middleware as the second middleware for production
@@ -258,4 +259,35 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
+}
+
+# SQL Query Logging - Enable in both dev and prod until performance issues are resolved
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "WARNING",  # Set to WARNING to focus on slow queries only
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",  # Changed from WARNING to DEBUG to log all individual queries
+            "propagate": False,
+        },
+    },
 }
