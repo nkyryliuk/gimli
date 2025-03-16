@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "steps": {
+    "build": {
+      "commands": [
+        "...",
+        "cd frontend && pnpm install && pnpm build && cd .. && python manage.py collectstatic --noinput"
+      ]
+    }
+  },
+  "packages": {
+    "pnpm": "10.6.3"
+  }
+}
