@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./index.css";
@@ -12,6 +12,9 @@ axios.defaults.baseURL =
 axios.defaults.withCredentials = true;
 
 import { useAuthStore } from "./stores/useAuthStore";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const authStore = useAuthStore.getState();
 authStore.checkAuth();
@@ -76,7 +79,9 @@ ReactDOM.hydrateRoot(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <ClientOnlyPostHogProvider>
-        <HydratedRouter />
+        <QueryClientProvider client={queryClient}>
+          <HydratedRouter />
+        </QueryClientProvider>
       </ClientOnlyPostHogProvider>
     </GoogleOAuthProvider>
   </React.StrictMode>

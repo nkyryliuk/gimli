@@ -20,6 +20,7 @@ const Login: React.FC = () => {
   const { login, isAuthenticated, loading } = useAuthStore();
   const navigate = useNavigate();
 
+  /* TODO: refactor this weird google button AI slop */
   useEffect(() => {
     if (loading) return;
 

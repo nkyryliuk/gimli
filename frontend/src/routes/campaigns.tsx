@@ -1,24 +1,32 @@
-import { type FC } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CampaignList } from "@/components/CampaignList";
+import { CampaignModal } from "@/components/CampaignModal";
+import { useCampaignStore } from "@/stores/useCampaignStore";
+import { Toaster } from "@/components/ui/sonner";
 
-const Campaigns: FC = () => (
-  <Card>
-    <CardHeader>
-      <CardTitle>Your Campaigns</CardTitle>
-      <CardDescription>Manage your D&D campaigns and lore</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p className="text-muted-foreground">
-        This is where your D&D campaigns and lore will be displayed. We'll add
-        more features soon!
-      </p>
-    </CardContent>
-  </Card>
-);
-export default Campaigns;
+export default function Campaigns() {
+  const {
+    modalOpen,
+    selectedCampaign,
+    openNewCampaign,
+    editCampaign,
+    closeModal,
+  } = useCampaignStore();
+
+  return (
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <CampaignList
+          onNewCampaign={openNewCampaign}
+          onEditCampaign={editCampaign}
+        />
+
+        <CampaignModal
+          campaign={selectedCampaign}
+          open={modalOpen}
+          onClose={closeModal}
+        />
+      </div>
+      <Toaster position="top-right" />
+    </>
+  );
+}

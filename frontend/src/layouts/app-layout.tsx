@@ -9,6 +9,7 @@ import {
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import DynamicBreadcrumbs from "@/components/nav-breadcrumbs";
+import Login from "@/routes/login";
 
 const ProtectedContent = memo(() => {
   return (
@@ -42,7 +43,7 @@ function AppLayout() {
 
   // if someone is f*cking around and tries to access the login page while already logged in
   if (isLoginRoute) {
-    return isAuthenticated ? <Navigate to="/" replace /> : <ProtectedContent />;
+    return isAuthenticated ? <Navigate to="/" replace /> : <Login />;
   }
 
   return isAuthenticated ? (
