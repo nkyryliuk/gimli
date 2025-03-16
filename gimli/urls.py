@@ -9,6 +9,10 @@ from rest_framework_simplejwt.views import (
 )
 from django.http import JsonResponse
 import os
+import time
+import logging
+
+logger = logging.getLogger("django.request")
 
 print("DEBUG: Loading main URLs configuration")  # Debug log
 
@@ -20,8 +24,31 @@ def serve_spa(request):
 
 # Health check endpoint for Railway
 def health_check(request):
-    """Simple health check endpoint"""
-    return JsonResponse({"status": "healthy"})
+    """Simple health check endpoint with response time measurement"""
+    start = time.time()
+    response = JsonResponse({"status": "healthy"})
+    duration = time.time() - start
+    logger.info(f"Health check response time: {duration*1000:.2f}ms")
+    return response
+
+
+# Performance test endpoint
+def perf_test(request):
+    """Test endpoint to measure response times"""
+    start = time.time()
+    # Simple dictionary operation
+    data = {"test": "data"}
+    for i in range(1000):
+        data[f"key_{i}"] = i
+
+    duration = time.time() - start
+    return JsonResponse(
+        {
+            "process_time_ms": duration * 1000,
+            "timestamp": time.time(),
+            "message": "Performance test endpoint",
+        }
+    )
 
 
 # Define all API and admin routes first
@@ -34,6 +61,7 @@ api_and_admin_patterns = [
     path("api/lore/", include("gimli.lore.urls")),
     path("api/", include("gimli.lore.urls")),
     path("api/health/", health_check, name="health_check"),
+    path("api/perf-test/", perf_test, name="perf_test"),
 ]
 
 # Handle SPA routes

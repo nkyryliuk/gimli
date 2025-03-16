@@ -2,6 +2,7 @@ import logging
 import traceback
 from django.http import JsonResponse
 from django.conf import settings
+import time
 
 logger = logging.getLogger("django.request")
 
@@ -50,5 +51,31 @@ class SecurityHeadersMiddleware:
                 "connect-src https://accounts.google.com/gsi/ 'self';"
             )
             response["Content-Security-Policy-Report-Only"] = csp_value
+
+        return response
+
+
+class RequestTimingMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Start timing
+        start_time = time.time()
+
+        # Process the request
+        response = self.get_response(request)
+
+        # Calculate duration
+        duration = time.time() - start_time
+
+        # Log if request is slow (over 200ms)
+        if duration > 0.2:
+            logger.warning(
+                f"SLOW REQUEST: {request.method} {request.path} took {duration*1000:.2f}ms"
+            )
+
+        # Add timing header to response
+        response["X-Request-Time"] = f"{duration*1000:.2f}ms"
 
         return response

@@ -73,6 +73,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "gimli.middleware.ErrorLoggingMiddleware",
+    "gimli.middleware.RequestTimingMiddleware",
 ]
 
 # Add whitenoise middleware as the second middleware for production
@@ -130,6 +131,15 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
+        # Connection pooling settings
+        "CONN_MAX_AGE": 60,  # Keep connections open for 60 seconds
+        "CONN_HEALTH_CHECKS": True,  # Check health of connections
+        "OPTIONS": {
+            "connect_timeout": 10,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
     }
 }
 
