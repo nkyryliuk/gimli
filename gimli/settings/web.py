@@ -92,11 +92,16 @@ MIDDLEWARE += [
 
 ROOT_URLCONF = "gimli.urls"
 
-# Configure templates based on environment
+# Set up template directories based on environment
+TEMPLATE_DIRS = []
+if IS_PRODUCTION:
+    TEMPLATE_DIRS.append(os.path.join(BASE_DIR, "frontend", "build", "client"))
+
+# Configure templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": TEMPLATE_DIRS,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -108,10 +113,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# In production, add the frontend build directory to template dirs
-if IS_PRODUCTION:
-    TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "frontend", "dist")]
 
 WSGI_APPLICATION = "gimli.wsgi.application"
 
@@ -155,7 +156,7 @@ STATICFILES_DIRS = []
 if IS_PRODUCTION:
     # In production, add the frontend build directory to staticfiles dirs
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "frontend", "dist", "assets"),
+        os.path.join(BASE_DIR, "frontend", "build", "client", "assets"),
     ]
     # Use whitenoise for static files in production
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
