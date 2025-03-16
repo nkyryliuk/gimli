@@ -1,20 +1,21 @@
 [phases.setup]
-nixPkgs = ["nodejs", "python3"]
+nixPkgs = ["nodejs", "python3", "curl"]
 
 [phases.install]
-# Use corepack to reliably install and manage pnpm
+# Use corepack to manage pnpm and install uv directly
 cmds = [
     "npm install -g corepack",
     "corepack enable",
     "corepack prepare pnpm@10.6.3 --activate",
-    "cd frontend && pnpm install",
-    "cd .. && pip install -r requirements.txt",
+    "cd /app/frontend && pnpm install",
+    "curl -LsSf https://astral.sh/uv/install.sh | sh",
+    "cd /app && /root/.cargo/bin/uv pip install -r requirements.txt",
 ]
 
 [phases.build]
 cmds = [
-    "cd frontend && pnpm build",
-    "cd .. && python manage.py collectstatic --noinput",
+    "cd /app/frontend && pnpm build",
+    "cd /app && python3 manage.py collectstatic --noinput",
 ]
 
 [start]
