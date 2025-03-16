@@ -31,7 +31,7 @@ urlpatterns = [
 ]
 
 # Serve static files during development
-if settings.DEBUG:
+if not settings.IS_PRODUCTION:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     # Don't attempt to serve frontend in development mode
 else:

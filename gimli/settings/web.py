@@ -16,6 +16,10 @@ SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
+# Environment: 'development', 'production', etc.
+ENV = os.getenv("ENV", "development")
+IS_PRODUCTION = ENV == "production"
+
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite default dev server
@@ -68,10 +72,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "gimli.middleware.ErrorLoggingMiddleware",
 ]
 
 # Add whitenoise middleware only in production
-if not DEBUG:
+if IS_PRODUCTION:
     MIDDLEWARE.append("whitenoise.middleware.WhiteNoiseMiddleware")
 
 MIDDLEWARE += [
@@ -105,7 +110,7 @@ TEMPLATES = [
 ]
 
 # In production, add the frontend build directory to template dirs
-if not DEBUG:
+if IS_PRODUCTION:
     TEMPLATES[0]["DIRS"] = [os.path.join(BASE_DIR, "frontend", "dist")]
 
 WSGI_APPLICATION = "gimli.wsgi.application"
@@ -147,7 +152,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Configure static files based on environment
 STATICFILES_DIRS = []
-if not DEBUG:
+if IS_PRODUCTION:
     # In production, add the frontend build directory to staticfiles dirs
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "frontend", "dist", "assets"),
