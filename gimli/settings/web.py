@@ -133,10 +133,11 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
         # Connection pooling settings
-        "CONN_MAX_AGE": 60,  # Keep connections open for 60 seconds
-        "CONN_HEALTH_CHECKS": True,  # Check health of connections
+        "CONN_MAX_AGE": 120,  # Increased connection lifetime
+        "CONN_HEALTH_CHECKS": True,
+        "ATOMIC_REQUESTS": False,  # Disable auto-transactions for performance
         "OPTIONS": {
-            "connect_timeout": 10,
+            "connect_timeout": 5,  # Lower timeout
             "keepalives_idle": 30,
             "keepalives_interval": 10,
             "keepalives_count": 5,
@@ -246,11 +247,9 @@ REST_AUTH = {
 
 # JWT Settings
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60 * 24 * 30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": True,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": None,
@@ -259,6 +258,10 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+    "JTI_CLAIM": None,  # Disable JTI claim checking
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": None,  # Disable sliding claims
 }
 
 # SQL Query Logging - Enable in both dev and prod until performance issues are resolved

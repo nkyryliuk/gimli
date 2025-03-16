@@ -69,9 +69,13 @@ class CampaignViewSet(viewsets.ModelViewSet):
         """
         user = self.request.user
         # Return campaigns where user is either owner or player
-        return Campaign.objects.filter(
-            models.Q(owner=user) | models.Q(players=user)
-        ).distinct()
+        # Optimize with select_related and prefetch_related to reduce queries
+        return (
+            Campaign.objects.filter(models.Q(owner=user) | models.Q(players=user))
+            .select_related("owner")
+            .prefetch_related("players")
+            .distinct()
+        )
 
     def get_serializer_class(self):
         """
@@ -176,9 +180,13 @@ class CharacterViewSet(viewsets.ModelViewSet):
         campaign_id = self.kwargs.get("campaign_pk")
         # If we're in the context of a campaign, filter by that campaign
         if campaign_id:
-            return Character.objects.filter(campaign_id=campaign_id)
+            return Character.objects.filter(campaign_id=campaign_id).select_related(
+                "owner", "campaign"
+            )
         # Otherwise return all characters the user has access to
-        return Character.objects.filter(owner=self.request.user)
+        return Character.objects.filter(owner=self.request.user).select_related(
+            "campaign"
+        )
 
     def get_serializer_class(self):
         """
