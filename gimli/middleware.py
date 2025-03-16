@@ -45,7 +45,7 @@ class SecurityHeadersMiddleware:
 
             # Specific CSP directive required for Google Identity Services
             csp_value = (
-                "script-src https://accounts.google.com/gsi/client 'self'; "
+                "script-src https://accounts.google.com/gsi/client 'self' 'unsafe-inline'; "
                 "frame-src https://accounts.google.com/gsi/; "
                 "connect-src https://accounts.google.com/gsi/ 'self';"
             )
