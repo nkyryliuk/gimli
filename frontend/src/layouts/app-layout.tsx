@@ -8,16 +8,8 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import DynamicBreadcrumbs from "@/components/nav-breadcrumbs";
 
-// Memoize layouts to prevent unnecessary re-renders
 const ProtectedContent = memo(() => {
   return (
     <SidebarProvider>
@@ -27,19 +19,7 @@ const ProtectedContent = memo(() => {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <DynamicBreadcrumbs />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -54,21 +34,22 @@ function AppLayout() {
   const { isAuthenticated, loading } = useAuthStore();
   const location = useLocation();
 
+  const isLoginRoute = location.pathname === "/login";
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  const isLoginPage = location.pathname === "/login";
-
-  if (isAuthenticated) {
-    return isLoginPage ? (
-      <Navigate to="/dashboard" replace />
-    ) : (
-      <ProtectedContent />
-    );
-  } else {
-    return isLoginPage ? <Outlet /> : <Navigate to="/login" replace />;
+  // if someone is f*cking around and tries to access the login page while already logged in
+  if (isLoginRoute) {
+    return isAuthenticated ? <Navigate to="/" replace /> : <ProtectedContent />;
   }
+
+  return isAuthenticated ? (
+    <ProtectedContent />
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
 
 export default AppLayout;

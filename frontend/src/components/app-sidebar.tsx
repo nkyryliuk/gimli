@@ -21,40 +21,40 @@ const data = {
   navMain: [
     {
       title: "Campaigns",
-      url: "#",
+      url: "/campaigns",
       icon: Map,
       isActive: true,
       items: [
         {
           title: "History",
-          url: "#",
+          url: "/campaigns/history",
         },
         {
           title: "Starred",
-          url: "#",
+          url: "/campaigns/starred",
         },
       ],
     },
     {
       title: "Bestiary",
-      url: "#",
+      url: "/bestiary",
       icon: BookOpen,
       items: [
         {
           title: "Your Monsters",
-          url: "#",
+          url: "/bestiary/your-monsters",
         },
         {
           title: "All Monsters",
-          url: "#",
+          url: "/bestiary/all-monsters",
         },
         {
           title: "Legendary and Mythic Creatures",
-          url: "#",
+          url: "/bestiary/legendary-and-mythic-creatures",
         },
         {
           title: "Recent Additions",
-          url: "#",
+          url: "/bestiary/recent-additions",
         },
       ],
     },

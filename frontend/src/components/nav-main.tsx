@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
+import { NavLink } from "react-router";
 
 import {
   Collapsible,
@@ -42,10 +43,10 @@ export function NavMain({
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton asChild tooltip={item.title}>
-                  <a href={item.url}>
+                  <NavLink to={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
-                  </a>
+                  </NavLink>
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               {item.items?.length ? (
@@ -61,9 +62,9 @@ export function NavMain({
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
+                            <NavLink to={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

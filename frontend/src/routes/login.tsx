@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
-import { DragonLogo } from "./ui/dragon-logo";
+import { DragonLogo } from "../components/ui/dragon-logo";
 
 declare global {
   interface Window {
@@ -17,14 +17,11 @@ declare global {
 }
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated } = useAuthStore();
+  const { login, isAuthenticated, loading } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-      return;
-    }
+    if (loading) return;
 
     const initializeGoogleSignIn = () => {
       if (!window.google) return;
@@ -57,7 +54,7 @@ const Login: React.FC = () => {
     return () => {
       document.body.removeChild(script);
     };
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, loading]);
 
   const handleCredentialResponse = async (response: any) => {
     try {
@@ -69,7 +66,7 @@ const Login: React.FC = () => {
         access_token: response.credential,
       });
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -79,20 +76,13 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-black">
       <div className="w-full max-w-[400px] mx-auto p-8">
         <div className="flex flex-col items-center space-y-16">
-          {/* Logo */}
           <DragonLogo className="w-96 h-96" size={200} />
-
-          {/* Title and description */}
           <div className="space-y-3 text-center">
             <h1 className="text-5xl font-bold tracking-tight text-red-500">
-              D&D Lore Manager
+              Gimli
             </h1>
-            <p className="text-sm text-gray-400">
-              Your gateway to epic adventures
-            </p>
+            <p className="text-sm text-gray-400">Tools for f*cking nerds</p>
           </div>
-
-          {/* Sign in button */}
           <div
             id="google-signin-button"
             className="flex justify-center pt-4"
