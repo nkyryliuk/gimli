@@ -37,7 +37,6 @@ export function CampaignForm({ campaign, onSubmit }: CampaignFormProps) {
         is_active: campaign.is_active,
       });
     } else {
-      // Reset form when creating a new campaign
       setFormData({
         name: "",
         description: "",
@@ -65,10 +64,10 @@ export function CampaignForm({ campaign, onSubmit }: CampaignFormProps) {
 
     try {
       if (campaign) {
-        await updateCampaign({ id: campaign.id, data: formData });
+        updateCampaign({ id: campaign.id, data: formData });
         toast.success("Campaign updated successfully");
       } else {
-        await createCampaign(formData);
+        createCampaign(formData);
         toast.success("Campaign created successfully");
       }
 
@@ -76,9 +75,7 @@ export function CampaignForm({ campaign, onSubmit }: CampaignFormProps) {
     } catch (error: any) {
       console.error("Error submitting campaign:", error);
 
-      // Display error message
       if (error.response?.data) {
-        // Display specific error from API if available
         const errorMsg =
           typeof error.response.data === "string"
             ? error.response.data

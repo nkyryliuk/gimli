@@ -8,7 +8,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlusIcon, TrashIcon, UserPlusIcon, UsersIcon } from "lucide-react";
+import {
+  BookOpenText,
+  MapPin,
+  PlusIcon,
+  Scroll,
+  Shield,
+  TrashIcon,
+  UserPlusIcon,
+  UsersIcon,
+} from "lucide-react";
 
 interface CampaignListProps {
   onNewCampaign: () => void;
@@ -45,12 +54,62 @@ export function CampaignList({
 
   if (campaigns.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg">
-        <p className="text-gray-500 mb-4">No campaigns found</p>
-        <Button onClick={onNewCampaign} className="flex items-center">
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Create your first campaign
-        </Button>
+      <div className="flex flex-col items-center justify-center py-16 px-4">
+        <div className="w-full max-w-3xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
+              <BookOpenText className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold mb-2">Begin Your Adventure</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Create your first campaign to start organizing your world,
+              characters, and lore for your tabletop adventures.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card className="p-4 border-dashed">
+              <div className="flex flex-col items-center text-center">
+                <Shield className="h-10 w-10 text-primary/60 mb-2" />
+                <h3 className="font-medium">Organize Your Game</h3>
+                <p className="text-sm text-muted-foreground">
+                  Track campaigns, sessions, and player information
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-4 border-dashed">
+              <div className="flex flex-col items-center text-center">
+                <Scroll className="h-10 w-10 text-primary/60 mb-2" />
+                <h3 className="font-medium">Create Rich Lore</h3>
+                <p className="text-sm text-muted-foreground">
+                  Document NPCs, locations, and factions
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-4 border-dashed">
+              <div className="flex flex-col items-center text-center">
+                <MapPin className="h-10 w-10 text-primary/60 mb-2" />
+                <h3 className="font-medium">Plan Adventures</h3>
+                <p className="text-sm text-muted-foreground">
+                  Map out quests and story arcs
+                </p>
+              </div>
+            </Card>
+          </div>
+
+          <div className="flex justify-center">
+            <Button
+              onClick={onNewCampaign}
+              className="flex items-center"
+              size="lg"
+            >
+              <PlusIcon className="mr-2 h-5 w-5" />
+              Create Your First Campaign
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
