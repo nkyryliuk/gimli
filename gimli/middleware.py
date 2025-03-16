@@ -87,6 +87,9 @@ class QueryTracingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        from django.db import connection, reset_queries
+        import time
+
         # Clear any existing queries
         reset_queries()
 
@@ -98,6 +101,10 @@ class QueryTracingMiddleware:
 
         # Calculate duration
         duration = time.time() - start
+
+        # Initialize query variables
+        query_count = 0
+        query_time = 0
 
         # Only log API requests to avoid cluttering logs
         if request.path.startswith("/api/"):
@@ -128,8 +135,7 @@ class QueryTracingMiddleware:
 
         # Add header with timing info
         response["X-Request-Duration"] = f"{duration*1000:.2f}ms"
-        if query_count > 0:
-            response["X-DB-Query-Count"] = str(query_count)
-            response["X-DB-Query-Duration"] = f"{query_time*1000:.2f}ms"
+        response["X-DB-Query-Count"] = str(query_count)
+        response["X-DB-Query-Duration"] = f"{query_time*1000:.2f}ms"
 
         return response
