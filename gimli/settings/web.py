@@ -79,6 +79,9 @@ MIDDLEWARE = [
 if IS_PRODUCTION:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
+# Add security headers middleware
+MIDDLEWARE.append("gimli.middleware.SecurityHeadersMiddleware")
+
 MIDDLEWARE += [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",

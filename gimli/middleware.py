@@ -1,6 +1,7 @@
 import logging
 import traceback
 from django.http import JsonResponse
+from django.conf import settings
 
 logger = logging.getLogger("django.request")
 
@@ -28,3 +29,26 @@ class ErrorLoggingMiddleware:
 
         # Return a simple 500 response when not in DEBUG mode
         return None  # Let Django's default error handling proceed
+
+
+class SecurityHeadersMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        # Only apply security headers in production
+        if settings.IS_PRODUCTION:
+            # Required for Google Sign-In popups to work properly
+            response["Cross-Origin-Opener-Policy"] = "same-origin-allow-popups"
+
+            # Specific CSP directive required for Google Identity Services
+            csp_value = (
+                "script-src https://accounts.google.com/gsi/client; "
+                "frame-src https://accounts.google.com/gsi/; "
+                "connect-src https://accounts.google.com/gsi/;"
+            )
+            response["Content-Security-Policy-Report-Only"] = csp_value
+
+        return response
