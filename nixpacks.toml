@@ -2,8 +2,12 @@
 nixPkgs = ["nodejs", "python3"]
 
 [phases.install]
+# Use corepack to reliably install and manage pnpm
 cmds = [
-    "cd frontend && npm install -g pnpm && pnpm install",
+    "npm install -g corepack",
+    "corepack enable",
+    "corepack prepare pnpm@10.6.3 --activate",
+    "cd frontend && pnpm install",
     "cd .. && pip install -r requirements.txt",
 ]
 
