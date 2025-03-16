@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 import {
   Collapsible,
@@ -20,8 +20,6 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-const ACTIVE_ROUTE_LINK_CLASS_NAME = "active-route";
-
 export function NavMain({
   items,
 }: {
@@ -36,12 +34,18 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const { pathname } = useLocation();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={pathname.startsWith(item.url)}
+          >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton asChild tooltip={item.title}>
