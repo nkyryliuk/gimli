@@ -148,7 +148,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
+STATIC_URL = "/assets/" if IS_PRODUCTION else "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Configure static files based on environment
@@ -156,10 +156,10 @@ STATICFILES_DIRS = []
 if IS_PRODUCTION:
     # In production, add the frontend build directory to staticfiles dirs
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "frontend", "build", "client", "assets"),
+        os.path.join(BASE_DIR, "frontend", "build", "client"),
     ]
-    # Use whitenoise for static files in production
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    # Use a simpler whitenoise configuration to avoid MIME type issues
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

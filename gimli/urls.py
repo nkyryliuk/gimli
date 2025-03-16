@@ -8,13 +8,20 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from django.http import JsonResponse
+import os
 
 print("DEBUG: Loading main URLs configuration")  # Debug log
 
 
-# Simple health check endpoint for Railway
+# Health check endpoint for Railway
 def health_check(request):
+    """Simple health check endpoint"""
     return JsonResponse({"status": "healthy"})
+
+
+# Simple catch-all to serve the frontend
+def serve_spa(request):
+    return TemplateView.as_view(template_name="index.html")(request)
 
 
 urlpatterns = [
@@ -35,6 +42,9 @@ if not settings.IS_PRODUCTION:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     # Don't attempt to serve frontend in development mode
 else:
-    # Serve frontend in production - this needs to be at the end
-    # This will catch all routes not matched by the above patterns and serve the React app
-    urlpatterns += [re_path(r"^.*$", TemplateView.as_view(template_name="index.html"))]
+    # In production, serve the SPA for any route that isn't an API route
+    urlpatterns += [
+        # Admin is already handled above
+        # Handle all other paths as SPA routes - this must be last
+        re_path(r"^(?!api/)(?!admin/).*$", serve_spa, name="spa"),
+    ]
