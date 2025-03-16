@@ -75,9 +75,9 @@ MIDDLEWARE = [
     "gimli.middleware.ErrorLoggingMiddleware",
 ]
 
-# Add whitenoise middleware only in production
+# Add whitenoise middleware as the second middleware for production
 if IS_PRODUCTION:
-    MIDDLEWARE.append("whitenoise.middleware.WhiteNoiseMiddleware")
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 MIDDLEWARE += [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -95,7 +95,10 @@ ROOT_URLCONF = "gimli.urls"
 # Set up template directories based on environment
 TEMPLATE_DIRS = []
 if IS_PRODUCTION:
+    # Explicitly set the template directory to the root of the build
     TEMPLATE_DIRS.append(os.path.join(BASE_DIR, "frontend", "build", "client"))
+    # Also look in the staticfiles directory after collectstatic has run
+    TEMPLATE_DIRS.append(os.path.join(BASE_DIR, "staticfiles"))
 
 # Configure templates
 TEMPLATES = [
@@ -158,8 +161,14 @@ if IS_PRODUCTION:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "frontend", "build", "client"),
     ]
-    # Use a simpler whitenoise configuration to avoid MIME type issues
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+    # Use basic whitenoise storage without compression to avoid MIME type issues
+    STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
+
+    # Add WhiteNoise configuration for proper static file handling
+    WHITENOISE_INDEX_FILE = False  # Don't serve index.html for directory requests
+    WHITENOISE_ROOT = os.path.join(
+        BASE_DIR, "frontend", "build", "client"
+    )  # Serve files from the build directory
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
