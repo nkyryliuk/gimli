@@ -25,6 +25,7 @@
     "@react-router/node": "^7.3.0",
     "axios": "^1.6.7",
     "isbot": "^5",
+    "posthog-js": "^1.231.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^7.3.0",
