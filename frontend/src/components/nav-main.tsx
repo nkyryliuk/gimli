@@ -20,6 +20,8 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
+const ACTIVE_ROUTE_LINK_CLASS_NAME = "active-route";
+
 export function NavMain({
   items,
 }: {
@@ -43,7 +45,12 @@ export function NavMain({
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton asChild tooltip={item.title}>
-                  <NavLink to={item.url}>
+                  <NavLink
+                    to={item.url}
+                    className={({ isActive }) =>
+                      isActive ? "text-primary" : ""
+                    }
+                  >
                     <item.icon />
                     <span>{item.title}</span>
                   </NavLink>
@@ -63,7 +70,13 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             <NavLink to={subItem.url}>
-                              <span>{subItem.title}</span>
+                              {({ isActive }) => (
+                                <span
+                                  className={isActive ? "font-semibold" : ""}
+                                >
+                                  {subItem.title}
+                                </span>
+                              )}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

@@ -23,7 +23,7 @@ const data = {
       title: "Campaigns",
       url: "/campaigns",
       icon: Map,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "History",
