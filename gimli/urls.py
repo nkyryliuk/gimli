@@ -13,5 +13,7 @@ urlpatterns = [
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("accounts/", include("allauth.urls")),
+    # Support both URL patterns to maintain compatibility with the frontend
     path("api/lore/", include("gimli.lore.urls")),
+    path("api/", include("gimli.lore.urls")),
 ]

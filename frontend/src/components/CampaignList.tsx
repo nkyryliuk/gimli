@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useCampaigns, Campaign } from "@/hooks/useCampaigns";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,7 @@ export function CampaignList({
   onEditCampaign,
 }: CampaignListProps) {
   const { campaigns, isLoading, isError, deleteCampaign } = useCampaigns();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -132,7 +134,7 @@ export function CampaignList({
           >
             <CardHeader
               className="cursor-pointer"
-              onClick={() => onEditCampaign(campaign)}
+              onClick={() => navigate(`/campaigns/${campaign.id}/characters`)}
             >
               <CardTitle className="flex items-start justify-between">
                 <span>{campaign.name}</span>
@@ -147,7 +149,7 @@ export function CampaignList({
 
             <CardContent
               className="cursor-pointer"
-              onClick={() => onEditCampaign(campaign)}
+              onClick={() => navigate(`/campaigns/${campaign.id}/characters`)}
             >
               <p className="text-sm text-gray-600 line-clamp-3">
                 {campaign.description || "No description provided."}
@@ -183,12 +185,11 @@ export function CampaignList({
                 className="text-blue-500 hover:text-blue-700 hover:bg-blue-50"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // This would typically open a modal to add players
-                  alert("Add players functionality to be implemented");
+                  onEditCampaign(campaign);
                 }}
               >
                 <UserPlusIcon className="h-4 w-4 mr-1" />
-                Add Players
+                Edit
               </Button>
             </CardFooter>
           </Card>

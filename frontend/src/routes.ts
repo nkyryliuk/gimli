@@ -4,7 +4,11 @@ export default [
   layout("./layouts/app-layout.tsx", [
     index("./routes/home.tsx"),
     route("/login", "./routes/login.tsx"),
-    route("/campaigns/*", "./routes/campaigns.tsx"),
+    route("/campaigns", "./routes/campaigns.tsx"),
+    route(
+      "/campaigns/:campaignId/characters",
+      "./routes/campaign-characters.tsx"
+    ),
     route("/bestiary/*", "./routes/bestiary.tsx"),
     route("*", "./catchall.tsx"),
   ]),
