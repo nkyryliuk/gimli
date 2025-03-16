@@ -10,7 +10,7 @@ cmds = [
     "cd /app/frontend && pnpm install",
     "curl -LsSf https://astral.sh/uv/install.sh | sh",
     "export PATH=\"$HOME/.local/bin:$PATH\"",
-    "cd /app && $HOME/.local/bin/uv pip install -r requirements.txt",
+    "cd /app && $HOME/.local/bin/uv pip install --system -r requirements.txt",
 ]
 
 [phases.build]
