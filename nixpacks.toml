@@ -9,7 +9,8 @@ cmds = [
     "corepack prepare pnpm@10.6.3 --activate",
     "cd /app/frontend && pnpm install",
     "curl -LsSf https://astral.sh/uv/install.sh | sh",
-    "cd /app && /root/.cargo/bin/uv pip install -r requirements.txt",
+    "export PATH=\"$HOME/.local/bin:$PATH\"",
+    "cd /app && $HOME/.local/bin/uv pip install -r requirements.txt",
 ]
 
 [phases.build]
