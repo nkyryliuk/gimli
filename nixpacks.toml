@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["nodejs", "python3"]
+
+[phases.install]
+cmds = [
+    "cd frontend && npm install -g pnpm && pnpm install",
+    "cd .. && pip install -r requirements.txt",
+]
+
+[phases.build]
+cmds = [
+    "cd frontend && pnpm build",
+    "cd .. && python manage.py collectstatic --noinput",
+]
+
+[start]
+cmd = "gunicorn gimli.wsgi:application --bind 0.0.0.0:$PORT"
