@@ -134,6 +134,14 @@ export function useCampaigns() {
     },
   });
 
+  const upsertCampaign = (campaign: Campaign) => {
+    if (campaign.id) {
+      updateCampaignMutation.mutate({ id: campaign.id, data: campaign });
+    } else {
+      createCampaignMutation.mutate(campaign);
+    }
+  };
+
   return {
     campaigns: campaignsQuery.data || [],
     isLoading: campaignsQuery.isLoading,

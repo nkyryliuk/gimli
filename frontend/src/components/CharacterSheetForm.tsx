@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,7 +50,7 @@ export function CharacterSheetForm() {
     features: "",
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name.includes(".")) {
@@ -95,17 +95,17 @@ export function CharacterSheetForm() {
     return mod >= 0 ? `+${mod}` : mod.toString();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       if (selectedCharacter) {
-        await updateCharacter(formData);
+        updateCharacter(formData);
         toast.success("Character updated successfully");
         closeModal();
       } else {
-        await createCharacter(formData);
+        createCharacter(formData);
         toast.success("Character created successfully");
         closeModal();
       }

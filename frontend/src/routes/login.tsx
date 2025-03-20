@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { type FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/useAuthStore";
 import { DragonLogo } from "../components/ui/dragon-logo";
@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-const Login: React.FC = () => {
+const Login: FC = () => {
   const { login, isAuthenticated, loading } = useAuthStore();
   const navigate = useNavigate();
 

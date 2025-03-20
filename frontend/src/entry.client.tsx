@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { type ReactNode, StrictMode, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./index.css";
@@ -19,11 +19,7 @@ const queryClient = new QueryClient();
 const authStore = useAuthStore.getState();
 authStore.checkAuth();
 
-const ClientOnlyPostHogProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const ClientOnlyPostHogProvider = ({ children }: { children: ReactNode }) => {
   const isClient = typeof window !== "undefined";
 
   useEffect(() => {
@@ -76,7 +72,7 @@ const ClientOnlyPostHogProvider = ({
 
 ReactDOM.hydrateRoot(
   document,
-  <React.StrictMode>
+  <StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <ClientOnlyPostHogProvider>
         <QueryClientProvider client={queryClient}>
@@ -84,5 +80,5 @@ ReactDOM.hydrateRoot(
         </QueryClientProvider>
       </ClientOnlyPostHogProvider>
     </GoogleOAuthProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Campaign,
-  CampaignCreateInput,
-  useCampaigns,
-} from "@/hooks/useCampaigns";
+import { Campaign, useCampaigns } from "@/hooks/useCampaigns";
+import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,142 +12,107 @@ interface CampaignFormProps {
   onSubmit: () => void;
 }
 
+const GAME_SYSTEMS = [
+  "D&D 5e",
+  "Pathfinder",
+  "Call of Cthulhu",
+  "Shadowrun",
+  "Vampire: The Masquerade",
+  "Warhammer Fantasy",
+  "Star Wars RPG",
+  "Cyberpunk RED",
+  "GURPS",
+  "Other",
+];
+
 export function CampaignForm({ campaign, onSubmit }: CampaignFormProps) {
   const { createCampaign, updateCampaign, isCreating, isUpdating } =
     useCampaigns();
-  const isLoading = isCreating || isUpdating;
 
-  const [formData, setFormData] = useState<CampaignCreateInput>({
-    name: "",
-    description: "",
-    game_system: "D&D 5e", // Default value
-    is_active: true,
-  });
-
-  useEffect(() => {
-    if (campaign) {
-      setFormData({
-        name: campaign.name,
-        description: campaign.description,
-        game_system: campaign.game_system,
-        is_active: campaign.is_active,
-      });
-    } else {
-      setFormData({
-        name: "",
-        description: "",
-        game_system: "D&D 5e",
-        is_active: true,
-      });
-    }
-  }, [campaign]);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSwitchChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, is_active: checked }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
+  const form = useForm({
+    defaultValues: {
+      name: campaign?.name ?? "",
+      description: campaign?.description ?? "",
+      game_system: campaign?.game_system ?? "D&D 5e",
+      is_active: campaign?.is_active ?? true,
+    },
+    onSubmit: async ({ value }) => {
       if (campaign) {
-        updateCampaign({ id: campaign.id, data: formData });
+        updateCampaign({ id: campaign.id, data: value });
         toast.success("Campaign updated successfully");
       } else {
-        createCampaign(formData);
+        createCampaign(value);
         toast.success("Campaign created successfully");
       }
-
-      onSubmit();
-    } catch (error: any) {
-      console.error("Error submitting campaign:", error);
-
-      if (error.response?.data) {
-        const errorMsg =
-          typeof error.response.data === "string"
-            ? error.response.data
-            : Object.entries(error.response.data)
-                .map(([key, value]) => `${key}: ${value}`)
-                .join(", ");
-
-        toast.error(`Failed to save campaign: ${errorMsg}`);
-      } else {
-        toast.error("Failed to save campaign. Please try again.");
-      }
-    }
-  };
-
-  const gameSystems = [
-    "D&D 5e",
-    "Pathfinder",
-    "Call of Cthulhu",
-    "Shadowrun",
-    "Vampire: The Masquerade",
-    "Warhammer Fantasy",
-    "Star Wars RPG",
-    "Cyberpunk RED",
-    "GURPS",
-    "Other",
-  ];
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 py-4">
+    <form onSubmit={form.handleSubmit} className="space-y-6 py-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Campaign Name *</Label>
-        <Input
-          id="name"
+        <form.Field
           name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Enter campaign name"
-          required
+          children={(field) => (
+            <Input
+              id="name"
+              name={field.name}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder="Enter campaign name"
+              required
+            />
+          )}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="game_system">Game System *</Label>
-        <select
-          id="game_system"
+        <form.Field
           name="game_system"
-          value={formData.game_system}
-          onChange={handleChange}
-          className="w-full rounded-md border border-input bg-background px-3 py-2"
-          required
-        >
-          {gameSystems.map((system) => (
-            <option key={system} value={system}>
-              {system}
-            </option>
-          ))}
-        </select>
+          children={(field) => (
+            <select
+              id="game_system"
+              name={field.name}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2"
+              required
+            >
+              {GAME_SYSTEMS.map((system) => (
+                <option key={system} value={system}>
+                  {system}
+                </option>
+              ))}
+            </select>
+          )}
+        />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
+        <form.Field
           name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Describe your campaign"
-          rows={4}
+          children={(field) => (
+            <Textarea
+              id="description"
+              name={field.name}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder="Describe your campaign"
+              rows={4}
+            />
+          )}
         />
       </div>
 
       <div className="flex items-center space-x-2">
-        <Switch
-          id="is_active"
-          checked={formData.is_active}
-          onCheckedChange={handleSwitchChange}
+        <form.Field
+          name="is_active"
+          children={(field) => (
+            <Switch
+              id="is_active"
+              checked={field.state.value}
+              onCheckedChange={(checked) => field.handleChange(checked)}
+            />
+          )}
         />
         <Label htmlFor="is_active">Campaign is active</Label>
       </div>
@@ -161,15 +122,20 @@ export function CampaignForm({ campaign, onSubmit }: CampaignFormProps) {
           type="button"
           variant="outline"
           onClick={onSubmit}
-          disabled={isLoading}
+          disabled={isCreating || isUpdating}
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isLoading || !formData.name || !formData.game_system}
+          disabled={
+            isCreating ||
+            isUpdating ||
+            !form.state.values.name ||
+            !form.state.values.game_system
+          }
         >
-          {isLoading ? (
+          {isCreating || isUpdating ? (
             <span className="flex items-center">
               <div className="animate-spin h-4 w-4 mr-2 border-2 border-b-0 border-white rounded-full" />
               Saving...
